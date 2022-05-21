@@ -56,31 +56,31 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.md-5</groupId>
+            <groupId>net.md-5-r</groupId>
             <artifactId>bungeecord-log</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.md-5</groupId>
+            <groupId>net.md-5-r</groupId>
             <artifactId>bungeecord-native</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.md-5</groupId>
+            <groupId>net.md-5-r</groupId>
             <artifactId>bungeecord-protocol</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.md-5</groupId>
+            <groupId>net.md-5-r</groupId>
             <artifactId>bungeecord-query</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.md-5</groupId>
+            <groupId>net.md-5-r</groupId>
             <artifactId>bungeecord-slf4j</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
