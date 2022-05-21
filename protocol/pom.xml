@@ -35,7 +35,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>net.md-5-r</groupId>
+            <groupId>net.md-5</groupId>
             <artifactId>brigadier</artifactId>
             <version>1.0.16-SNAPSHOT</version>
             <scope>compile</scope>

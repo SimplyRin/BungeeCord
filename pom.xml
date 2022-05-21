@@ -106,7 +106,7 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>net.md-5-r</groupId>
+                <groupId>net.md-5</groupId>
                 <artifactId>scriptus</artifactId>
                 <version>0.4.1</version>
                 <configuration>
