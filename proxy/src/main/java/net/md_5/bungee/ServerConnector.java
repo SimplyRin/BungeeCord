@@ -105,6 +105,8 @@ public class ServerConnector extends PacketHandler
 
         if ( event.isCancelled() )
         {
+            this.ch = (ChannelWrapper) event.getChannelWrapper();
+            this.handshakeHandler = (ForgeServerHandler) event.getHandshakeHandler();
             return;
         }
 
@@ -350,6 +352,7 @@ public class ServerConnector extends PacketHandler
 
         if ( event.isCancelled() )
         {
+            this.ch = (ChannelWrapper) event.getChannelWrapper();
             throw CancelSendSignal.INSTANCE;
         }
 
