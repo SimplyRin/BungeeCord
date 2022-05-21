@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.event.ChannelWrapperEvent;
+import net.md_5.bungee.api.event.EncryptionRequestEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.event.ServerConnectedEvent;
 import net.md_5.bungee.api.event.ServerKickEvent;
@@ -98,6 +100,13 @@ public class ServerConnector extends PacketHandler
     public void connected(ChannelWrapper channel) throws Exception
     {
         this.ch = channel;
+
+        ChannelWrapperEvent event = new ChannelWrapperEvent( user, ch, target, handshakeHandler );
+
+        if ( event.isCancelled() )
+        {
+            return;
+        }
 
         this.handshakeHandler = new ForgeServerHandler( user, ch, target );
         Handshake originalHandshake = user.getPendingConnection().getHandshake();
@@ -337,6 +346,13 @@ public class ServerConnector extends PacketHandler
     @Override
     public void handle(EncryptionRequest encryptionRequest) throws Exception
     {
+        EncryptionRequestEvent event = new EncryptionRequestEvent( user, ch, encryptionRequest );
+
+        if ( event.isCancelled() )
+        {
+            throw CancelSendSignal.INSTANCE;
+        }
+
         throw new QuietException( "Server is online mode!" );
     }
 
