@@ -102,6 +102,7 @@ public class ServerConnector extends PacketHandler
         this.ch = channel;
 
         ChannelWrapperEvent event = new ChannelWrapperEvent( user, ch, target, handshakeHandler );
+        bungee.getPluginManager().callEvent( event );
 
         if ( event.isCancelled() )
         {
@@ -349,6 +350,7 @@ public class ServerConnector extends PacketHandler
     public void handle(EncryptionRequest encryptionRequest) throws Exception
     {
         EncryptionRequestEvent event = new EncryptionRequestEvent( user, ch, encryptionRequest );
+        bungee.getPluginManager().callEvent( event );
 
         if ( event.isCancelled() )
         {
