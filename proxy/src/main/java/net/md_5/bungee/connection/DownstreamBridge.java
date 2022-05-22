@@ -674,10 +674,9 @@ public class DownstreamBridge extends PacketHandler
         }
 
         TabCommandsEvent event = new TabCommandsEvent( con, commands );
-        if ( bungee.getPluginManager().callEvent( event ).isCancelled() )
-        {
-            commands.setRoot( new RootCommandNode<>() );
+        bungee.getPluginManager().callEvent( event );
 
+        if ( event.isModified() ) {
             modified = true;
         }
 
