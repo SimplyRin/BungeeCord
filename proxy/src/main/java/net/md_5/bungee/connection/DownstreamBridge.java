@@ -12,7 +12,6 @@ import com.mojang.brigadier.context.StringRange;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.tree.CommandNode;
-import com.mojang.brigadier.tree.RootCommandNode;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
@@ -676,7 +675,8 @@ public class DownstreamBridge extends PacketHandler
         TabCommandsEvent event = new TabCommandsEvent( con, commands );
         bungee.getPluginManager().callEvent( event );
 
-        if ( event.isModified() ) {
+        if ( event.isModified() )
+        {
             modified = true;
         }
 
