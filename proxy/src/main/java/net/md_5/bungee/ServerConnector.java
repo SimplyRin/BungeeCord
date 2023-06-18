@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.event.BrandSendEvent;
 import net.md_5.bungee.api.event.ChannelWrapperEvent;
 import net.md_5.bungee.api.event.EncryptionRequestEvent;
 import net.md_5.bungee.api.event.ServerConnectEvent;
@@ -262,7 +263,20 @@ public class ServerConnector extends PacketHandler
             } else
             {
                 ByteBuf brand = ByteBufAllocator.DEFAULT.heapBuffer();
-                DefinedPacket.writeString( bungee.getName() + " (" + bungee.getVersion() + ")", brand );
+
+                String bugnee = bungee.getName() + " (" + bungee.getVersion() + ")";
+
+                BrandSendEvent brandSendEvent = new BrandSendEvent( user, false, bugnee, bugnee, null );
+                BrandSendEvent ret = bungee.getPluginManager().callEvent( brandSendEvent );
+
+                if ( ret.isOverwrite() )
+                {
+                    DefinedPacket.writeString( ret.getBrand(), brand );
+                } else
+                {
+                    DefinedPacket.writeString( bugnee, brand );
+                }
+
                 user.unsafe().sendPacket( new PluginMessage( user.getPendingConnection().getVersion() >= ProtocolConstants.MINECRAFT_1_13 ? "minecraft:brand" : "MC|Brand", DefinedPacket.toArray( brand ), handshakeHandler.isServerForge() ) );
                 brand.release();
             }
