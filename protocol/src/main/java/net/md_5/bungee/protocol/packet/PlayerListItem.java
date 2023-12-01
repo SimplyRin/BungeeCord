@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PlayerPublicKey;
@@ -144,6 +146,17 @@ public class PlayerListItem extends DefinedPacket
 
         // ADD_PLAYER & UPDATE_DISPLAY_NAME
         BaseComponent displayName;
+
+        public void setDisplayName(String displayName)
+        {
+            try
+            {
+                this.displayName = ComponentSerializer.deserialize( displayName );
+            } catch ( Exception e )
+            {
+                this.displayName = new TextComponent( displayName );
+            }
+        }
 
     }
 }

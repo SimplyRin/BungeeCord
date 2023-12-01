@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.Either;
@@ -127,5 +129,38 @@ public class Team extends DefinedPacket
     public void handle(AbstractPacketHandler handler) throws Exception
     {
         handler.handle( this );
+    }
+
+    public void setDisplayName(String displayName)
+    {
+        try
+        {
+            this.displayName = new Either<>( displayName, ComponentSerializer.deserialize( displayName ) );
+        } catch ( Exception e )
+        {
+            this.displayName = new Either<>( displayName, new TextComponent( displayName ) );
+        }
+    }
+
+    public void setPrefix(String prefix)
+    {
+        try
+        {
+            this.prefix = new Either<>( prefix, ComponentSerializer.deserialize( prefix ) );
+        } catch ( Exception e )
+        {
+            this.prefix = new Either<>( prefix, new TextComponent( prefix ) );
+        }
+    }
+
+    public void setSuffix(String suffix)
+    {
+        try
+        {
+            this.suffix = new Either<>( suffix, ComponentSerializer.deserialize( suffix ) );
+        } catch ( Exception e )
+        {
+            this.suffix = new Either<>( suffix, new TextComponent( suffix ) );
+        }
     }
 }

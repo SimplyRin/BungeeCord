@@ -1,11 +1,10 @@
 package net.md_5.bungee.protocol;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public final class Either<L, R>
 {
 

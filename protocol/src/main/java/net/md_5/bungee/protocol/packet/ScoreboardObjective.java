@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.Either;
@@ -94,6 +96,17 @@ public class ScoreboardObjective extends DefinedPacket
         public static HealthDisplay fromString(String s)
         {
             return valueOf( s.toUpperCase( Locale.ROOT ) );
+        }
+    }
+
+    public void setValue(String value)
+    {
+        try
+        {
+            this.value = new Either<>( value, ComponentSerializer.deserialize( value ) );
+        } catch ( Exception e )
+        {
+            this.value = new Either<>( value, new TextComponent( value ) );
         }
     }
 }

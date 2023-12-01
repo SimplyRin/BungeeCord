@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.ProtocolConstants;
@@ -19,6 +21,24 @@ public class PlayerListHeaderFooter extends DefinedPacket
 
     private BaseComponent header;
     private BaseComponent footer;
+
+    public PlayerListHeaderFooter(String header, String footer)
+    {
+        try
+        {
+            this.header = ComponentSerializer.deserialize( header );
+        } catch ( Exception e )
+        {
+            this.header = new TextComponent( header );
+        }
+        try
+        {
+            this.footer = ComponentSerializer.deserialize( footer );
+        } catch ( Exception e )
+        {
+            this.footer = new TextComponent( footer );
+        }
+    }
 
     @Override
     public void read(ByteBuf buf, ProtocolConstants.Direction direction, int protocolVersion)

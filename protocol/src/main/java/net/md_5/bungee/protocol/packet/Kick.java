@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
@@ -49,5 +50,16 @@ public class Kick extends DefinedPacket
     public void handle(AbstractPacketHandler handler) throws Exception
     {
         handler.handle( this );
+    }
+
+    public void setMessage(String message)
+    {
+        try
+        {
+            this.message = ComponentSerializer.deserialize( message );
+        } catch ( Exception e )
+        {
+            this.message = new TextComponent( message );
+        }
     }
 }
