@@ -35,7 +35,7 @@ public class ServerData extends DefinedPacket
         {
             if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_19_4 )
             {
-                icon = DefinedPacket.readArray( buf );
+                icon = readArray( buf );
             } else
             {
                 icon = readString( buf );
@@ -47,7 +47,7 @@ public class ServerData extends DefinedPacket
             preview = buf.readBoolean();
         }
 
-        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_19_1 )
+        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_19_1 && protocolVersion < ProtocolConstants.MINECRAFT_1_20_5 )
         {
             enforceSecure = buf.readBoolean();
         }
@@ -78,7 +78,7 @@ public class ServerData extends DefinedPacket
             buf.writeBoolean( true );
             if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_19_4 )
             {
-                DefinedPacket.writeArray( (byte[]) icon, buf );
+                writeArray( (byte[]) icon, buf );
             } else
             {
                 writeString( (String) icon, buf );
@@ -93,7 +93,7 @@ public class ServerData extends DefinedPacket
             buf.writeBoolean( preview );
         }
 
-        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_19_1 )
+        if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_19_1 && protocolVersion < ProtocolConstants.MINECRAFT_1_20_5 )
         {
             buf.writeBoolean( enforceSecure );
         }
