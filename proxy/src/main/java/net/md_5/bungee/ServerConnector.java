@@ -143,7 +143,7 @@ public class ServerConnector extends PacketHandler
         channel.write( copiedHandshake );
 
         channel.setProtocol( Protocol.LOGIN );
-        channel.write( new LoginRequest( user.getName(), null, user.getUniqueId() ) );
+        channel.write( new LoginRequest( user.getName(), null, user.getRewriteId() ) );
     }
 
     @Override
@@ -392,7 +392,7 @@ public class ServerConnector extends PacketHandler
             } else
             {
                 LoginResult loginProfile = user.getPendingConnection().getLoginProfile();
-                user.unsafe().sendPacket( new LoginSuccess( user.getUniqueId(), user.getName(), ( loginProfile == null ) ? null : loginProfile.getProperties() ) );
+                user.unsafe().sendPacket( new LoginSuccess( user.getRewriteId(), user.getName(), ( loginProfile == null ) ? null : loginProfile.getProperties() ) );
                 user.getCh().setEncodeProtocol( Protocol.CONFIGURATION );
             }
         }

@@ -52,7 +52,19 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.md-5-r</groupId>
+            <groupId>io.netty.incubator</groupId>
+            <artifactId>netty-incubator-transport-native-io_uring</artifactId>
+            <version>0.0.25.Final</version>
+            <classifier>linux-x86_64</classifier>
+        </dependency>
+        <dependency>
+            <groupId>io.netty.incubator</groupId>
+            <artifactId>netty-incubator-transport-native-io_uring</artifactId>
+            <version>0.0.25.Final</version>
+            <classifier>linux-aarch_64</classifier>
+        </dependency>
+        <dependency>
+            <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
@@ -96,7 +108,7 @@
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
-            <version>8.2.0</version>
+            <version>8.3.0</version>
             <scope>runtime</scope>
         </dependency>
         <!-- add these back in as they are not exposed by the API -->
