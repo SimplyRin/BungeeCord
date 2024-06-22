@@ -131,6 +131,11 @@ public class Team extends DefinedPacket
         handler.handle( this );
     }
 
+    public void setDisplayName(Either<String, BaseComponent> displayName)
+    {
+        this.displayName = displayName;
+    }
+
     public void setDisplayName(String displayName)
     {
         try
@@ -142,6 +147,11 @@ public class Team extends DefinedPacket
         }
     }
 
+    public void setPrefix(Either<String, BaseComponent> prefix)
+    {
+        this.prefix = prefix;
+    }
+
     public void setPrefix(String prefix)
     {
         try
@@ -151,6 +161,11 @@ public class Team extends DefinedPacket
         {
             this.prefix = new Either<>( prefix, new TextComponent( prefix ) );
         }
+    }
+
+    public void setSuffix(Either<String, BaseComponent> suffix)
+    {
+        this.suffix = suffix;
     }
 
     public void setSuffix(String suffix)

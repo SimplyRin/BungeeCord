@@ -99,6 +99,11 @@ public class ScoreboardObjective extends DefinedPacket
         }
     }
 
+    public void setValue(Either<String, BaseComponent> value)
+    {
+        this.value = value;
+    }
+
     public void setValue(String value)
     {
         try

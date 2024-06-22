@@ -49,6 +49,11 @@ public class SystemChat extends DefinedPacket
         handler.handle( this );
     }
 
+    public void setMessage(BaseComponent message)
+    {
+        this.message = message;
+    }
+
     public void setMessage(String message)
     {
         try

@@ -105,6 +105,11 @@ public class ServerData extends DefinedPacket
         handler.handle( this );
     }
 
+    public void setMotd(BaseComponent motd)
+    {
+        this.motd = motd;
+    }
+
     public void setMotd(String motd)
     {
         try

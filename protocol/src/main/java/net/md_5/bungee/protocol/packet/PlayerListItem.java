@@ -4,7 +4,9 @@ import io.netty.buffer.ByteBuf;
 import java.util.UUID;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
@@ -146,6 +148,11 @@ public class PlayerListItem extends DefinedPacket
 
         // ADD_PLAYER & UPDATE_DISPLAY_NAME
         BaseComponent displayName;
+
+        public void setDisplayName(BaseComponent displayName)
+        {
+            this.displayName = displayName;
+        }
 
         public void setDisplayName(String displayName)
         {
