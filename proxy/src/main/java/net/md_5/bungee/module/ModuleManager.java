@@ -28,6 +28,7 @@ public class ModuleManager
 
     public ModuleManager()
     {
+        knownSources.put( "github", new GitHubModuleSource() );
         knownSources.put( "jenkins", new JenkinsModuleSource() );
     }
 
@@ -72,6 +73,8 @@ public class ModuleManager
         }
         // End yaml
 
+        String buildType = proxy.getVersion().split( ":" )[0];
+
         List<String> defaults = new ArrayList<>();
         Object readModules = config.get( "modules" );
         if ( readModules != null )
@@ -82,14 +85,14 @@ public class ModuleManager
         switch ( version )
         {
             case 0:
-                defaults.add( "jenkins://cmd_alert" );
-                defaults.add( "jenkins://cmd_bungee" );
-                defaults.add( "jenkins://cmd_find" );
-                defaults.add( "jenkins://cmd_list" );
-                defaults.add( "jenkins://cmd_send" );
-                defaults.add( "jenkins://cmd_server" );
+                defaults.add( buildType + "://cmd_alert" );
+                defaults.add( buildType + "://cmd_bungee" );
+                defaults.add( buildType + "://cmd_find" );
+                defaults.add( buildType + "://cmd_list" );
+                defaults.add( buildType + "://cmd_send" );
+                defaults.add( buildType + "://cmd_server" );
             case 1:
-                defaults.add( "jenkins://reconnect_yaml" );
+                defaults.add( buildType + "://reconnect_yaml" );
         }
         config.put( "modules", defaults );
         config.put( "version", 2 );

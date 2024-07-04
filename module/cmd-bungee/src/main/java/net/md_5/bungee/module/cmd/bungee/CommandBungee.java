@@ -1,5 +1,7 @@
 package net.md_5.bungee.module.cmd.bungee;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -39,9 +41,12 @@ public class CommandBungee extends Command
 
         String version = ProxyServer.getInstance().getVersion();
         int lastColon = version.lastIndexOf( ':' );
+
+        String buildType = version.split( ":" )[0];
+
         String buildNumber = version.substring( lastColon + 1, version.length() );
 
-        if ( "unknown".equals( buildNumber ) )
+        if ( "unknown".equals( buildType ) || "unknown".equals( buildNumber ) )
         {
             sender.sendMessage( "Couldn't detect bungee version. Custom build?" );
             return;
@@ -53,7 +58,23 @@ public class CommandBungee extends Command
         {
             try
             {
-                HttpsURLConnection connection = (HttpsURLConnection) new URL( "https://ci.simplyrin.net/job/BungeeCord/lastStableBuild/buildNumber" ).openConnection();
+                String fetchUrl = null;
+                String downloadUrl = null;
+                String type = null;
+
+                if ( "github".equals( buildType ) )
+                {
+                    fetchUrl = "https://api.github.com/repos/SimplyRin/BungeeCord/releases";
+                    downloadUrl = "https://github.com/SimplyRin/BungeeCord/releases";
+                    type = "GitHub Actions";
+                } else if ( "jenkins".equals( buildType ) )
+                {
+                    fetchUrl = "https://ci.simplyrin.net/job/BungeeCord/lastStableBuild/buildNumber";
+                    downloadUrl = "https://ci.simplyrin.net/job/BungeeCord/";
+                    type = "Jenkins";
+                }
+
+                HttpsURLConnection connection = (HttpsURLConnection) new URL( fetchUrl ).openConnection();
                 connection.addRequestProperty( "user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" );
 
                 // 5 second timeout at various stages
@@ -62,11 +83,23 @@ public class CommandBungee extends Command
 
                 String result = new BufferedReader( new InputStreamReader( connection.getInputStream(), StandardCharsets.UTF_8 ) ).lines().collect( Collectors.joining() );
 
-                int lastStableBuild = Integer.valueOf( result ).intValue();
+                int lastStableBuild = -1;
+
+                if ( "github".equals( buildType ) )
+                {
+                    JsonObject json = JsonParser.parseString( result ).getAsJsonArray().get( 0 ).getAsJsonObject();
+
+                    String tag_name = json.get( "tag_name" ).getAsString().replace( "v", "" );
+
+                    lastStableBuild = Integer.parseInt( tag_name );
+                } else if ( "jenkins".equals( buildType ) )
+                {
+                    lastStableBuild = Integer.parseInt( result );
+                }
 
                 if ( lastStableBuild == currentBuildNumber )
                 {
-                    TextComponent latest = new TextComponent( ChatColor.GREEN + "You are running the latest version" );
+                    TextComponent latest = new TextComponent( ChatColor.GREEN + "You are running the latest " + type + " version" );
                     latest.setHoverEvent( bungee.getHoverEvent() );
                     latest.setClickEvent( bungee.getClickEvent() );
 
@@ -83,9 +116,9 @@ public class CommandBungee extends Command
                     text.setHoverEvent( bungee.getHoverEvent() );
                     text.setClickEvent( bungee.getClickEvent() );
 
-                    TextComponent url = new TextComponent( ChatColor.GOLD + "https://ci.simplyrin.net/job/BungeeCord/" );
+                    TextComponent url = new TextComponent( ChatColor.GOLD + downloadUrl );
                     url.setHoverEvent( new HoverEvent( HoverEvent.Action.SHOW_TEXT, new Text( "Click to open" ) ) );
-                    url.setClickEvent( new ClickEvent( ClickEvent.Action.OPEN_URL, "https://ci.simplyrin.net/job/BungeeCord/" ) );
+                    url.setClickEvent( new ClickEvent( ClickEvent.Action.OPEN_URL, downloadUrl ) );
 
                     text.addExtra( url );
 

@@ -69,6 +69,7 @@
 
     <properties>
         <build.number>unknown</build.number>
+        <build.type>unknown</build.type>
         <lombok.version>1.18.32</lombok.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -135,7 +136,7 @@
                 <artifactId>scriptus</artifactId>
                 <version>0.5.0</version>
                 <configuration>
-                    <format>git:${project.name}:${project.version}:%s:${build.number}</format>
+                    <format>${build.type}:${project.name}:${project.version}:%s:${build.number}</format>
                 </configuration>
                 <executions>
                     <execution>
