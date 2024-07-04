@@ -15,7 +15,7 @@ public class GitHubModuleSource implements ModuleSource
     @Override
     public void retrieve(ModuleSpec module, ModuleVersion version)
     {
-        System.out.println( "Attempting to Jenkins download module " + module.getName() + " v" + version.getBuild() );
+        System.out.println( "Attempting to GitHub download module " + module.getName() + " v" + version.getBuild() );
         try
         {
             // https://github.com/SimplyRin/BungeeCord/releases/download/v1/BungeeCord.jar
