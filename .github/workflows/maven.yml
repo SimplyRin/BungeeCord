@@ -26,7 +26,7 @@ jobs:
     - name: Check outputs
       run: echo ${{ steps.vars.outputs.sha_short }}
     - name: Build with Maven
-      run: mvn clean package -DSHA=${{ steps.vars.outputs.sha_short }} -Dbuild.number=${{ github.run_number }}
+      run: mvn clean package -DSHA=${{ steps.vars.outputs.sha_short }} -Dbuild.type=github -Dbuild.number=${{ github.run_number }}
     - name: Upload Artifact
       uses: actions/upload-artifact@v2
       with:
@@ -43,8 +43,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: "v${{ github.run_number }}_${{ steps.vars.outputs.sha_short }}"
-        release_name: "Release v${{ github.run_number }}"
+        tag_name: "v${{ github.run_number }}"
+        release_name: "v${{ github.run_number }}"
         draft: false
         prerelease: true
     - name: Upload Release Asset - BungeeCord.jar
