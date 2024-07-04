@@ -46,7 +46,7 @@ jobs:
         tag_name: "v${{ github.run_number }}"
         release_name: "v${{ github.run_number }}"
         draft: false
-        prerelease: true
+        prerelease: false
     - name: Upload Release Asset - BungeeCord.jar
       id: upload-release-asset-jar
       uses: actions/upload-release-asset@v1
