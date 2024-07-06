@@ -1,6 +1,6 @@
 name: Java CI
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -129,3 +129,43 @@ jobs:
         asset_path: ./module/reconnect-yaml/target/reconnect_yaml.jar
         asset_name: reconnect_yaml.jar
         asset_content_type: application/java-archive
+    - name: Check Hash
+      id: md5
+      run: |
+        set -x
+        export BOOTSTRAP=$(md5sum ./bootstrap/target/BungeeCord.jar | cut -d ' ' -f 1)
+        export MODULES_ALERT=$(md5sum ./module/cmd-alert/target/cmd_alert.jar | cut -d ' ' -f 1)
+        export MODULES_BUNGEE=$(md5sum ./module/cmd-bungee/target/cmd_bungee.jar | cut -d ' ' -f 1)
+        export MODULES_FIND=$(md5sum ./module/cmd-find/target/cmd_find.jar | cut -d ' ' -f 1)
+        export MODULES_KICK=$(md5sum ./module/cmd-kick/target/cmd_kick.jar | cut -d ' ' -f 1)
+        export MODULES_LIST=$(md5sum ./module/cmd-list/target/cmd_list.jar | cut -d ' ' -f 1)
+        export MODULES_SEND=$(md5sum ./module/cmd-send/target/cmd_send.jar | cut -d ' ' -f 1)
+        export MODULES_SERVER=$(md5sum ./module/cmd-server/target/cmd_server.jar | cut -d ' ' -f 1)
+        export MODULES_RECONNECT=$(md5sum ./module/reconnect-yaml/target/reconnect_yaml.jar | cut -d ' ' -f 1)
+        echo ::set-output name=bootstrap::"$BOOTSTRAP"
+        echo ::set-output name=modules_alert::"$MODULES_ALERT"
+        echo ::set-output name=modules_bungee::"$MODULES_BUNGEE"
+        echo ::set-output name=modules_find::"$MODULES_FIND"
+        echo ::set-output name=modules_kick::"$MODULES_KICK"
+        echo ::set-output name=modules_list::"$MODULES_LIST"
+        echo ::set-output name=modules_send::"$MODULES_SEND"
+        echo ::set-output name=modules_server::"$MODULES_SERVER"
+        echo ::set-output name=modules_reconnect::"$MODULES_RECONNECT"
+        set +x
+    - name: Update Release
+      uses: irongut/EditRelease@v1.2.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        id: ${{ steps.create_release.outputs.id }}
+        body: |
+          | Filename  | MD5 Hash |
+          | ------------- | ------------- |
+          | [BungeeCord.jar](https://github.com/SimplyRin/BungeeCord/releases/download/v${{ github.run_number }}/BungeeCord.jar)  | ${{ steps.md5.outputs.bootstrap }} |
+          | [cmd_alert.jar](https://github.com/SimplyRin/BungeeCord/releases/download/v${{ github.run_number }}/cmd_alert.jar)  | ${{ steps.md5.outputs.modules_alert }} |
+          | [cmd_bungee.jar](https://github.com/SimplyRin/BungeeCord/releases/download/v${{ github.run_number }}/cmd_bungee.jar)  | ${{ steps.md5.outputs.modules_bungee }} |
+          | [cmd_find.jar](https://github.com/SimplyRin/BungeeCord/releases/download/v${{ github.run_number }}/cmd_find.jar)  | ${{ steps.md5.outputs.modules_find }} |
+          | [cmd_kick.jar](https://github.com/SimplyRin/BungeeCord/releases/download/v${{ github.run_number }}/cmd_kick.jar)  | ${{ steps.md5.outputs.modules_kick }} |
+          | [cmd_list.jar](https://github.com/SimplyRin/BungeeCord/releases/download/v${{ github.run_number }}/cmd_list.jar)  | ${{ steps.md5.outputs.modules_list }} |
+          | [cmd_send.jar](https://github.com/SimplyRin/BungeeCord/releases/download/v${{ github.run_number }}/cmd_send.jar)  | ${{ steps.md5.outputs.modules_send }} |
+          | [cmd_server.jar](https://github.com/SimplyRin/BungeeCord/releases/download/v${{ github.run_number }}/cmd_server.jar)  | ${{ steps.md5.outputs.modules_server }} |
+          | [reconnect_yaml.jar](https://github.com/SimplyRin/BungeeCord/releases/download/v${{ github.run_number }}/reconnect_yaml.jar)  | ${{ steps.md5.outputs.modules_reconnect }} |
