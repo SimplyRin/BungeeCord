@@ -66,6 +66,7 @@ import net.md_5.bungee.protocol.packet.Handshake;
 import net.md_5.bungee.protocol.packet.Kick;
 import net.md_5.bungee.protocol.packet.LegacyHandshake;
 import net.md_5.bungee.protocol.packet.LegacyPing;
+import net.md_5.bungee.protocol.packet.LoginAcknowledged;
 import net.md_5.bungee.protocol.packet.LoginPayloadResponse;
 import net.md_5.bungee.protocol.packet.LoginRequest;
 import net.md_5.bungee.protocol.packet.LoginSuccess;
@@ -691,6 +692,13 @@ public class InitialHandler extends PacketHandler implements PendingConnection
     }
 
     @Override
+    public void handle(LoginAcknowledged loginAcknowledged) throws Exception
+    {
+        // this packet should only be sent after the login success (it should be handled in the UpstreamBridge)
+        disconnect( "Unexpected LoginAcknowledged" );
+    }
+
+    @Override
     public void handle(CookieResponse cookieResponse)
     {
         // be careful, backend server could also make the client send a cookie response
@@ -716,6 +724,10 @@ public class InitialHandler extends PacketHandler implements PendingConnection
 
             throw CancelSendSignal.INSTANCE;
         }
+
+        // if there is no userCon we can't have a connection to a backend server that could have requested this cookie
+        // which means that this cookie is invalid as the proxy also has not requested it
+        Preconditions.checkState( userCon != null, "not requested cookie received" );
     }
 
     @Override

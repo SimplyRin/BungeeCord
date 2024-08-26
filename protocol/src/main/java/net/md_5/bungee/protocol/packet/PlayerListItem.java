@@ -163,5 +163,8 @@ public class PlayerListItem extends DefinedPacket
             }
         }
 
+        // UPDATE_LIST_ORDER 1.21.2
+        Integer listOrder;
+
     }
 }
