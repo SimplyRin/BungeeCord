@@ -166,5 +166,7 @@ public class PlayerListItem extends DefinedPacket
         // UPDATE_LIST_ORDER 1.21.2
         Integer listOrder;
 
+        // UPDATE_HAT 1.21.4
+        Boolean showHat;
     }
 }
