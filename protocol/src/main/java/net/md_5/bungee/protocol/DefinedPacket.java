@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +68,15 @@ public abstract class DefinedPacket
 
         writeVarInt( b.length, buf );
         buf.writeBytes( b );
+    }
+
+    public static <T> T readStringMapKey(ByteBuf buf, Map<String, T> map)
+    {
+        String string = readString( buf );
+        T result = map.get( string );
+        Preconditions.checkArgument( result != null, "Unknown string key %s", string );
+
+        return result;
     }
 
     public static String readString(ByteBuf buf)
@@ -279,6 +289,31 @@ public abstract class DefinedPacket
             {
                 break;
             }
+        }
+    }
+
+    public static void setVarInt(int value, ByteBuf output, int pos, int len)
+    {
+        switch ( len )
+        {
+            case 1:
+                output.setByte( pos, value );
+                break;
+            case 2:
+                output.setShort( pos, ( value & 0x7F | 0x80 ) << 8 | ( value >>> 7 & 0x7F ) );
+                break;
+            case 3:
+                output.setMedium( pos, ( value & 0x7F | 0x80 ) << 16 | ( value >>> 7 & 0x7F | 0x80 ) << 8 | ( value >>> 14 & 0x7F ) );
+                break;
+            case 4:
+                output.setInt( pos, ( value & 0x7F | 0x80 ) << 24 | ( value >>> 7 & 0x7F | 0x80 ) << 16 | ( value >>> 14 & 0x7F | 0x80 ) << 8 | ( value >>> 21 & 0x7F ) );
+                break;
+            case 5:
+                output.setInt( pos, ( value & 0x7F | 0x80 ) << 24 | ( value >>> 7 & 0x7F | 0x80 ) << 16 | ( value >>> 14 & 0x7F | 0x80 ) << 8 | ( value >>> 21 & 0x7F | 0x80 ) );
+                output.setByte( pos + 4, value >>> 28 );
+                break;
+            default:
+                throw new IllegalArgumentException( "Invalid varint len: " + len );
         }
     }
 

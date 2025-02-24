@@ -107,6 +107,7 @@ public class ServerConnector extends PacketHandler
     @Override
     public void connected(ChannelWrapper channel) throws Exception
     {
+        channel.setVersion( user.getPendingConnection().getVersion() );
         this.ch = channel;
 
         ChannelWrapperEvent event = new ChannelWrapperEvent( user, ch, target, handshakeHandler );
