@@ -122,6 +122,12 @@ public class InitialHandler extends PacketHandler implements PendingConnection
         {
             ch.write( packet );
         }
+
+        @Override
+        public void sendPacketQueued(DefinedPacket packet)
+        {
+            throw new UnsupportedOperationException( "Not supported" );
+        }
     };
     @Getter
     private boolean onlineMode = BungeeCord.getInstance().config.isOnlineMode();
@@ -186,12 +192,6 @@ public class InitialHandler extends PacketHandler implements PendingConnection
         {
             throw new QuietException( "Unexpected packet received during login process! " + BufUtil.dump( packet.buf, 16 ) );
         }
-    }
-
-    @Override
-    public void handle(PluginMessage pluginMessage) throws Exception
-    {
-        this.relayMessage( pluginMessage );
     }
 
     @Override
@@ -305,7 +305,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
                     @Override
                     public void done(ProxyPingEvent pingResult, Throwable error)
                     {
-                        Gson gson = BungeeCord.getInstance().gson;
+                        Gson gson = PingHandler.gson;
                         unsafe.sendPacket( new StatusResponse( gson.toJson( pingResult.getResponse() ) ) );
                         if ( bungee.getConnectionThrottle() != null )
                         {
@@ -532,7 +532,7 @@ public class InitialHandler extends PacketHandler implements PendingConnection
             {
                 if ( error == null )
                 {
-                    LoginResult obj = BungeeCord.getInstance().gson.fromJson( result, LoginResult.class );
+                    LoginResult obj = LoginResult.GSON.fromJson( result, LoginResult.class );
                     if ( obj != null && obj.getId() != null )
                     {
                         loginProfile = obj;
