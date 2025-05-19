@@ -21,13 +21,19 @@
     <dependencies>
         <dependency>
             <groupId>net.md-5-r</groupId>
-            <artifactId>bungeecord-chat</artifactId>
+            <artifactId>bungeecord-serializer</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.md-5-r</groupId>
             <artifactId>bungeecord-config</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.md-5-r</groupId>
+            <artifactId>bungeecord-dialog</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
         </dependency>
