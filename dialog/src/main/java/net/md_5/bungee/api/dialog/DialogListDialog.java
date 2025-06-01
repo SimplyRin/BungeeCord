@@ -1,13 +1,15 @@
 package net.md_5.bungee.api.dialog;
 
+import com.google.common.base.Preconditions;
 import com.google.gson.annotations.SerializedName;
 import java.util.Arrays;
 import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.dialog.action.ActionButton;
 
 /**
  * Represents a dialog which contains buttons that link to other dialogs.
@@ -19,6 +21,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 public final class DialogListDialog implements Dialog
 {
 
+    @NonNull
     @Accessors(fluent = false)
     private DialogBase base;
     /**
@@ -26,31 +29,45 @@ public final class DialogListDialog implements Dialog
      */
     private List<Dialog> dialogs;
     /**
-     * The {@link ClickEvent} activated when the dialog is cancelled.
+     * The {@link ActionButton} activated when the dialog is exited.
      */
-    @SerializedName("on_cancel")
-    private ClickEvent onCancel;
+    @SerializedName("exit_action")
+    private ActionButton exitAction;
     /**
      * The number of columns for the dialog buttons (default: 2).
      */
-    private int columns;
+    private Integer columns;
     /**
      * The width of the dialog buttons (default: 150, minimum: 1, maximum: 1024).
      */
     @SerializedName("button_width")
-    private int buttonWidth;
+    private Integer buttonWidth;
 
-    public DialogListDialog(DialogBase base, Dialog... dialogs)
+    public DialogListDialog(@NonNull DialogBase base, Dialog... dialogs)
     {
-        this( base, Arrays.asList( dialogs ), null, 2, 150 );
+        this( base, Arrays.asList( dialogs ), null, null, null );
     }
 
-    public DialogListDialog(DialogBase base, List<Dialog> dialogs, ClickEvent onCancel, int columns, int buttonWidth)
+    public DialogListDialog(@NonNull DialogBase base, List<Dialog> dialogs, ActionButton exitAction, Integer columns, Integer buttonWidth)
     {
         this.base = base;
         this.dialogs = dialogs;
-        this.onCancel = onCancel;
+        this.exitAction = exitAction;
+        columns( columns );
+        buttonWidth( buttonWidth );
+    }
+
+    public DialogListDialog columns(Integer columns)
+    {
+        Preconditions.checkArgument( columns == null || columns > 0, "At least one column is required" );
         this.columns = columns;
+        return this;
+    }
+
+    public DialogListDialog buttonWidth(Integer buttonWidth)
+    {
+        Preconditions.checkArgument( buttonWidth == null || ( buttonWidth >= 1 && buttonWidth <= 1024 ), "buttonWidth must be between 1 and 1024" );
         this.buttonWidth = buttonWidth;
+        return this;
     }
 }

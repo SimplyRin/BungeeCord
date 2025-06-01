@@ -45,6 +45,7 @@
         <module>serializer</module>
         <module>slf4j</module>
         <module>native</module>
+        <module>nbt</module>
     </modules>
 
     <scm>
@@ -101,12 +102,6 @@
             <artifactId>guava</artifactId>
             <version>33.3.1-jre</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>findbugs-annotations</artifactId>
-            <version>3.0.1</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
@@ -283,7 +278,7 @@
             <properties>
                 <maven.compiler.proc>full</maven.compiler.proc>
             </properties>
-        </profile>        
+        </profile>
         <profile>
             <id>dist</id>
             <build>

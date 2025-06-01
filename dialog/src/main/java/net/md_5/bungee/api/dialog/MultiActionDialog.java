@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.ToString;
 import lombok.experimental.Accessors;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.dialog.action.DialogClickAction;
+import net.md_5.bungee.api.dialog.action.ActionButton;
 
 /**
  * Represents a dialog with text a list of action buttons grouped into columns
@@ -22,34 +22,43 @@ import net.md_5.bungee.api.dialog.action.DialogClickAction;
 public final class MultiActionDialog implements Dialog
 {
 
+    @NonNull
     @Accessors(fluent = false)
     private DialogBase base;
     /**
      * The action buttons in the dialog. At least one must be provided.
      */
-    private List<DialogClickAction> actions;
+    @NonNull
+    private List<ActionButton> actions;
     /**
      * The number of columns for the dialog buttons (default: 2).
      */
-    private int columns;
+    private Integer columns;
     /**
-     * The {@link ClickEvent} activated when the dialog is cancelled.
+     * The {@link ActionButton} activated when the dialog is exited.
      */
-    @SerializedName("on_cancel")
-    private ClickEvent onCancel;
+    @SerializedName("exit_action")
+    private ActionButton exitAction;
 
-    public MultiActionDialog(DialogBase base, DialogClickAction... actions)
+    public MultiActionDialog(@NonNull DialogBase base, @NonNull ActionButton... actions)
     {
-        this( base, Arrays.asList( actions ), 2, null );
+        this( base, Arrays.asList( actions ), null, null );
     }
 
-    public MultiActionDialog(DialogBase base, List<DialogClickAction> actions, int columns, ClickEvent onCancel)
+    public MultiActionDialog(@NonNull DialogBase base, @NonNull List<ActionButton> actions, Integer columns, ActionButton exitAction)
     {
-        Preconditions.checkArgument( actions != null && !actions.isEmpty(), "At least one action must be provided" );
+        Preconditions.checkArgument( !actions.isEmpty(), "At least one action must be provided" );
 
         this.base = base;
         this.actions = actions;
+        columns( columns );
+        this.exitAction = exitAction;
+    }
+
+    public MultiActionDialog columns(Integer columns)
+    {
+        Preconditions.checkArgument( columns == null || columns > 0, "At least one column is required" );
         this.columns = columns;
-        this.onCancel = onCancel;
+        return this;
     }
 }
