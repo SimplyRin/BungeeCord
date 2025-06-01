@@ -41,7 +41,7 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>net.md-5</groupId>
+            <groupId>net.md-5-r</groupId>
             <artifactId>bungeecord-nbt</artifactId>
             <version>${project.version}</version>
             <scope>compile</scope>
