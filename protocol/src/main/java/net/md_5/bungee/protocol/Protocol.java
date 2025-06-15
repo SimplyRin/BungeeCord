@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import lombok.Data;
 import lombok.Getter;
 import net.md_5.bungee.protocol.packet.BossBar;
+import net.md_5.bungee.protocol.packet.BundleDelimiter;
 import net.md_5.bungee.protocol.packet.Chat;
 import net.md_5.bungee.protocol.packet.ClearDialog;
 import net.md_5.bungee.protocol.packet.ClearTitles;
@@ -85,6 +86,11 @@ public enum Protocol
     {
 
         {
+            TO_CLIENT.registerPacket(
+                    BundleDelimiter.class,
+                    BundleDelimiter::new,
+                    map( ProtocolConstants.MINECRAFT_1_19_4, 0x00 )
+            );
             TO_CLIENT.registerPacket(
                     KeepAlive.class,
                     KeepAlive::new,
@@ -874,6 +880,11 @@ public enum Protocol
                     KeepAlive::new,
                     map( ProtocolConstants.MINECRAFT_1_20_2, 0x03 ),
                     map( ProtocolConstants.MINECRAFT_1_20_5, 0x04 )
+            );
+            TO_SERVER.registerPacket(
+                    CustomClickAction.class,
+                    CustomClickAction::new,
+                    map( ProtocolConstants.MINECRAFT_1_21_6, 0x08 )
             );
         }
     };
