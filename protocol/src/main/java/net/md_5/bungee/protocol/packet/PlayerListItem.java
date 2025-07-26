@@ -10,9 +10,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.AbstractPacketHandler;
 import net.md_5.bungee.protocol.DefinedPacket;
-import net.md_5.bungee.protocol.PlayerPublicKey;
-import net.md_5.bungee.protocol.Property;
 import net.md_5.bungee.protocol.ProtocolConstants;
+import net.md_5.bungee.protocol.data.PlayerPublicKey;
+import net.md_5.bungee.protocol.data.Property;
 
 @Data
 @NoArgsConstructor
