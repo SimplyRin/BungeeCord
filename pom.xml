@@ -67,13 +67,6 @@
             <id>net.md-5</id>
             <name>bungeecord-parent</name>
             <url>file://${project.build.directory}/mvn-repo</url>
-        <snapshotRepository>
-            <id>central-portal-snapshots</id>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh-staging-api</id>
-            <url>https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
