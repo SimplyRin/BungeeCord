@@ -30,6 +30,7 @@ import net.md_5.bungee.protocol.packet.GameState;
 import net.md_5.bungee.protocol.packet.Handshake;
 import net.md_5.bungee.protocol.packet.KeepAlive;
 import net.md_5.bungee.protocol.packet.Kick;
+import net.md_5.bungee.protocol.packet.KnownPacks;
 import net.md_5.bungee.protocol.packet.Login;
 import net.md_5.bungee.protocol.packet.LoginAcknowledged;
 import net.md_5.bungee.protocol.packet.LoginPayloadRequest;
@@ -929,6 +930,11 @@ public enum Protocol
                     map( ProtocolConstants.MINECRAFT_1_20_5, 0x0B )
             );
             TO_CLIENT.registerPacket(
+                    KnownPacks.class,
+                    KnownPacks::new,
+                    map( ProtocolConstants.MINECRAFT_1_20_5, 0x0E )
+            );
+            TO_CLIENT.registerPacket(
                     DisconnectReportDetails.class,
                     DisconnectReportDetails::new,
                     RegisterType.ENCODE,
@@ -1028,9 +1034,9 @@ public enum Protocol
     {
 
         private final int protocolVersion;
-        private final Object2IntMap<Class<? extends DefinedPacket>> packetMap = new Object2IntOpenHashMap<>( MAX_PACKET_ID );
+        private final Object2IntMap<Class<? extends DefinedPacket>> packetMap = new Object2IntOpenHashMap<>( MAX_PACKET_ID + 1 );
         @SuppressWarnings("unchecked")
-        private final Supplier<? extends DefinedPacket>[] packetConstructors = new Supplier[ MAX_PACKET_ID ];
+        private final Supplier<? extends DefinedPacket>[] packetConstructors = new Supplier[ MAX_PACKET_ID + 1 ];
     }
 
     @Data
