@@ -215,7 +215,7 @@
                                 <reactorModuleConvergence/>
                                 <requireExplicitDependencyScope/>
                                 <enforceBytecodeVersion>
-                                    <maxJdkVersion>17</maxJdkVersion>
+                                    <maxJdkVersion>25</maxJdkVersion>
                                     <ignoreClasses>
                                         <ignoreClass>org.jline.terminal.impl.ffm.*</ignoreClass>
                                     </ignoreClasses>
