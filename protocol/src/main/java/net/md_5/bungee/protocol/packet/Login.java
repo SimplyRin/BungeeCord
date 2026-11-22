@@ -22,8 +22,8 @@ public class Login extends DefinedPacket
 
     private int entityId;
     private boolean hardcore;
-    private short gameMode;
-    private short previousGameMode;
+    private int gameMode;
+    private int previousGameMode;
     private Set<String> worldNames;
     private Tag dimensions;
     private Object dimension;
@@ -143,13 +143,26 @@ public class Login extends DefinedPacket
                 dimension = readString( buf );
             }
             worldName = readString( buf );
-            seed = buf.readLong();
-            gameMode = buf.readUnsignedByte();
-            previousGameMode = buf.readByte();
+            if ( protocolVersion < ProtocolConstants.MINECRAFT_26_4 )
+            {
+                seed = buf.readLong();
+            }
+            if ( protocolVersion >= ProtocolConstants.MINECRAFT_26_3 )
+            {
+                gameMode = readVarInt( buf );
+                previousGameMode = readVarInt( buf );
+            } else
+            {
+                gameMode = buf.readUnsignedByte();
+                previousGameMode = buf.readByte();
+            }
         }
         if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_16 )
         {
-            debug = buf.readBoolean();
+            if ( protocolVersion < ProtocolConstants.MINECRAFT_26_4 )
+            {
+                debug = buf.readBoolean();
+            }
             flat = buf.readBoolean();
         }
         if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_19 )
@@ -277,13 +290,26 @@ public class Login extends DefinedPacket
                 writeString( (String) dimension, buf );
             }
             writeString( worldName, buf );
-            buf.writeLong( seed );
-            buf.writeByte( gameMode );
-            buf.writeByte( previousGameMode );
+            if ( protocolVersion < ProtocolConstants.MINECRAFT_26_4 )
+            {
+                buf.writeLong( seed );
+            }
+            if ( protocolVersion >= ProtocolConstants.MINECRAFT_26_3 )
+            {
+                writeVarInt( gameMode, buf );
+                writeVarInt( previousGameMode, buf );
+            } else
+            {
+                buf.writeByte( gameMode );
+                buf.writeByte( previousGameMode );
+            }
         }
         if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_16 )
         {
-            buf.writeBoolean( debug );
+            if ( protocolVersion < ProtocolConstants.MINECRAFT_26_4 )
+            {
+                buf.writeBoolean( debug );
+            }
             buf.writeBoolean( flat );
         }
         if ( protocolVersion >= ProtocolConstants.MINECRAFT_1_19 )

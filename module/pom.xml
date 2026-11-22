@@ -46,7 +46,6 @@
     </dependencies>
 
     <build>
-        <finalName>${project.name}</finalName>
         <resources>
             <resource>
                 <filtering>true</filtering>

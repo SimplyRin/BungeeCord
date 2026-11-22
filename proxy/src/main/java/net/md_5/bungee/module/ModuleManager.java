@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,19 +27,11 @@ public class ModuleManager
     public ModuleManager()
     {
         knownSources.put( "github", new GitHubModuleSource() );
-        knownSources.put( "jenkins", new JenkinsModuleSource() );
     }
 
     public void load(ProxyServer proxy, File moduleDirectory) throws Exception
     {
         moduleDirectory.mkdir();
-
-        ModuleVersion bungeeVersion = ModuleVersion.parse( proxy.getVersion() );
-        if ( bungeeVersion == null )
-        {
-            proxy.getLogger().warning( "Couldn't detect bungee version. Custom build?" );
-            return;
-        }
 
         List<ModuleSpec> modules = new ArrayList<>();
         File configFile = new File( "modules.yml" );
@@ -68,13 +59,20 @@ public class ModuleManager
 
         String buildType = proxy.getVersion().split( ":" )[0];
 
+        int version = ( config.containsKey( "version" ) ) ? (int) config.get( "version" ) : 0;
         List<String> defaults = new ArrayList<>();
         Object readModules = config.get( "modules" );
         if ( readModules != null )
         {
-            defaults.addAll( (Collection) readModules );
+            for ( String moduleLine : (List<String>) readModules )
+            {
+                if ( version < 3 )
+                {
+                    moduleLine = moduleLine.replace( "jenkins://", "bootstrap://" );
+                }
+                defaults.add( moduleLine );
+            }
         }
-        int version = ( config.containsKey( "version" ) ) ? (int) config.get( "version" ) : 0;
         switch ( version )
         {
             case 0:
@@ -88,7 +86,7 @@ public class ModuleManager
                 defaults.add( buildType + "://reconnect_yaml" );
         }
         config.put( "modules", defaults );
-        config.put( "version", 2 );
+        config.put( "version", 3 );
 
         try ( FileWriter wr = new FileWriter( configFile ) )
         {
@@ -117,11 +115,17 @@ public class ModuleManager
             proxy.getLogger().info( "Discovered module: " + spec );
         }
 
+        ModuleVersion bungeeVersion = ModuleVersion.parse( proxy.getVersion() );
+        if ( bungeeVersion == null )
+        {
+            proxy.getLogger().warning( "Couldn't detect bungee version. Custom build?" );
+        }
+
         for ( ModuleSpec module : modules )
         {
             ModuleVersion moduleVersion = ( module.getFile().exists() ) ? getVersion( module.getFile() ) : null;
 
-            if ( !bungeeVersion.equals( moduleVersion ) )
+            if ( bungeeVersion == null || !bungeeVersion.equals( moduleVersion ) )
             {
                 proxy.getLogger().info( "Attempting to update plugin from " + moduleVersion + " to " + bungeeVersion );
                 module.getProvider().retrieve( module, bungeeVersion );

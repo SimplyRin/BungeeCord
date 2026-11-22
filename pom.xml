@@ -74,7 +74,8 @@
     <properties>
         <build.number>unknown</build.number>
         <build.type>unknown</build.type>
-        <lombok.version>1.18.46</lombok.version>
+        <lombok.version>1.18.48</lombok.version>
+        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -93,7 +94,7 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-bom</artifactId>
-                <version>4.2.16.Final</version>
+                <version>4.2.20.Final</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -103,13 +104,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>6.1.2</version>
+            <version>6.1.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.5.0-jre</version>
+            <version>33.8.0-jre</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -150,7 +151,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.6</version>
+                    <version>3.6.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -160,12 +161,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>3.1.4</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
-                    <version>3.1.4</version>
+                    <version>3.2.0</version>
                 </plugin>
                 <!-- additional plugins -->
                 <plugin>
@@ -179,7 +180,7 @@
             <plugin>
                 <groupId>net.md-5</groupId>
                 <artifactId>scriptus</artifactId>
-                <version>0.5.0</version>
+                <version>0.5.1</version>
                 <configuration>
                     <format>${build.type}:${project.name}:${project.version}:%s:${build.number}</format>
                 </configuration>
@@ -195,7 +196,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.15.0</version>
+                <version>3.16.0</version>
                 <configuration>
                     <annotationProcessorPaths>
                         <annotationProcessorPath>
@@ -234,19 +235,23 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.6.3</version>
+                <version>3.7.0</version>
                 <executions>
                     <execution>
                         <id>enforce</id>
                         <configuration>
                             <rules>
                                 <requireMavenVersion>
-                                    <version>3.6.3</version>
+                                    <version>3.7.0</version>
                                 </requireMavenVersion>
                                 <dependencyConvergence>
                                     <excludes>
-                                        <!-- org.apache.maven:maven-resolver-transport-http is inconsistent -->
+                                        <!-- org.apache.maven:maven-resolver-transport-apache is inconsistent -->
                                         <exclude>commons-codec:commons-codec</exclude>
+                                        <!-- From maven-resolver but we need the latest version -->
+                                        <exclude>com.google.code.gson:gson</exclude>
+                                        <exclude>com.google.errorprone:error_prone_annotations</exclude>
+                                        <exclude>org.ow2.asm:asm</exclude>
                                         <!-- We use SLF4J 2 (#3834) -->
                                         <exclude>org.slf4j:slf4j-api</exclude>
                                     </excludes>
@@ -271,9 +276,21 @@
                     <dependency>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>extra-enforcer-rules</artifactId>
-                        <version>1.12.0</version>
+                        <version>1.12.1</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Version>${describe}</Implementation-Version>
+                            <Specification-Version>${maven.build.timestamp}</Specification-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -378,7 +395,7 @@
                     <plugin>
                         <groupId>org.sonatype.central</groupId>
                         <artifactId>central-publishing-maven-plugin</artifactId>
-                        <version>0.11.0</version>
+                        <version>0.12.0</version>
                         <extensions>true</extensions>
                     </plugin>
                 </plugins>
