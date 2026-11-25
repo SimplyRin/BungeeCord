@@ -48,6 +48,18 @@ jobs:
         name: Module Artifacts
         path: "module/**/target/*.jar"
         overwrite: true
+    - name: Rename module jars
+      # Upstream dropped <finalName> from module/pom.xml, so modules are now built as
+      # bungeecord-module-<name>-<version>.jar. Keep the legacy release asset names (cmd_alert.jar, ...).
+      run: |
+        set -e
+        for dir in module/*/; do
+          [ -f "${dir}pom.xml" ] || continue
+          legacy="$(basename "$dir" | tr '-' '_').jar"
+          jar=$(ls "${dir}target"/bungeecord-module-*.jar | grep -v -e '-sources' -e '-javadoc' | head -n 1)
+          cp "$jar" "${dir}target/${legacy}"
+          echo "$jar -> ${dir}target/${legacy}"
+        done
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
