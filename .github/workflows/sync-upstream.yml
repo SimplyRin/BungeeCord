@@ -1,0 +1,85 @@
+name: Sync upstream
+
+# Merge SpigotMC/BungeeCord master into this fork once a day.
+# A PAT (secret SYNC_PAT, "repo" + "workflow" scopes) is required so that
+#  - upstream changes touching .github/workflows can be pushed, and
+#  - the push triggers the normal "Java CI" workflow (pushes made with GITHUB_TOKEN do not).
+
+on:
+  schedule:
+    - cron: '17 18 * * *' # daily, 03:17 JST
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository == 'SimplyRin/BungeeCord'
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+
+    steps:
+    - name: Check PAT
+      env:
+        SYNC_PAT: ${{ secrets.SYNC_PAT }}
+      run: |
+        if [ -z "$SYNC_PAT" ]; then
+          echo "::error::Secret SYNC_PAT is not set (PAT with 'repo' and 'workflow' scopes is required)"
+          exit 1
+        fi
+    - uses: actions/checkout@v7
+      with:
+        ref: master
+        fetch-depth: 0
+        token: ${{ secrets.SYNC_PAT }}
+    - name: Merge upstream
+      id: merge
+      run: |
+        git config user.name "SimplyRin"
+        git config user.email "SimplyRin@users.noreply.github.com"
+        git remote add upstream https://github.com/SpigotMC/BungeeCord.git
+        git fetch upstream master
+
+        behind=$(git rev-list --count HEAD..upstream/master)
+        if [ "$behind" -eq 0 ]; then
+          echo "Already up to date with upstream"
+          echo "result=uptodate" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        echo "$behind new upstream commit(s)"
+        if git merge upstream/master --no-ff -m "Merge branch 'SpigotMC:master' into master"; then
+          git push origin HEAD:master
+          echo "result=merged" >> "$GITHUB_OUTPUT"
+        else
+          git merge --abort
+          echo "result=conflict" >> "$GITHUB_OUTPUT"
+        fi
+    - name: Report merge conflict
+      if: steps.merge.outputs.result == 'conflict'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        title="Upstream sync failed: merge conflict"
+        existing=$(gh issue list -R "$GITHUB_REPOSITORY" --state open --search "\"$title\" in:title" --json number -q '.[0].number')
+        body="Merging \`SpigotMC/BungeeCord@master\` into \`master\` failed with conflicts. Resolve them locally:
+
+        \`\`\`
+        git fetch upstream
+        git merge upstream/master
+        \`\`\`
+
+        Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+        if [ -z "$existing" ]; then
+          gh issue create -R "$GITHUB_REPOSITORY" --title "$title" --body "$body"
+        else
+          gh issue comment "$existing" -R "$GITHUB_REPOSITORY" --body "$body"
+        fi
+        echo "::error::Merge conflict with upstream. See the created issue."
+        exit 1
