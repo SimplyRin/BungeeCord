@@ -40,9 +40,12 @@ jobs:
         token: ${{ secrets.SYNC_PAT }}
     - name: Merge upstream
       id: merge
+      env:
+        # Optional secret. Falls back to the account's GitHub noreply address.
+        GIT_EMAIL: ${{ secrets.SYNC_GIT_EMAIL || format('{0}+{1}@users.noreply.github.com', github.repository_owner_id, github.repository_owner) }}
       run: |
-        git config user.name "SimplyRin"
-        git config user.email "SimplyRin@users.noreply.github.com"
+        git config user.name "${GITHUB_REPOSITORY_OWNER}"
+        git config user.email "$GIT_EMAIL"
         git remote add upstream https://github.com/SpigotMC/BungeeCord.git
         git fetch upstream master
 
