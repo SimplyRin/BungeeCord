@@ -42,7 +42,7 @@ jobs:
       id: merge
       run: |
         git config user.name "SimplyRin"
-        git config user.email "SimplyRin@users.noreply.github.com"
+        git config user.email "github@simplyrin.net"
         git remote add upstream https://github.com/SpigotMC/BungeeCord.git
         git fetch upstream master
 
